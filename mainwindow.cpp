@@ -43,24 +43,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_imgbtn_clicked()
-{
-    //載入圖片到lable
-    Image = new QImage();
-    QString imgpath=QFileDialog::getOpenFileName(this, tr("Open File"),"/",tr("Image *.png *.jpg"));
-    Image->load(imgpath);
-
-    pixmap = QPixmap::fromImage(*Image);
-    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
-    ui->greybtn->setEnabled(true);
-}
-
-void MainWindow::on_savebtn_clicked()
-{
-    QString Simgpath=QFileDialog::getSaveFileName(this, tr("Save File"),"/",tr("PNG(*.png);;JPG(*.jpg)"));
-    *Image=pixmap.toImage();
-    Image->save(Simgpath);
-}
 
 void MainWindow::on_verticalSlider_valueChanged(int value)
 {
@@ -88,26 +70,55 @@ QImage *MainWindow::greyScale(QImage *origin){
 void MainWindow::on_greybtn_clicked()
 {
 
-    stepbackup[currentstep]=Image;
-    currentstep++;
-    stepbackup[currentstep]=greyScale(stepbackup[currentstep-1]);
-    pixmap = QPixmap::fromImage(*stepbackup[currentstep]);
-    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
 
+    Image[currentstep+1]=greyScale(Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    currentstep++;
 }
 
-void MainWindow::on_undobtn_clicked()
+
+
+void MainWindow::on_actionOpen_File_triggered()
+{
+    //載入圖片到lable
+    *Image=new QImage;
+    QString imgpath=QFileDialog::getOpenFileName(this, tr("Open File"),"/",tr("Image *.png *.jpg"));
+    Image[0]->load(imgpath);
+
+    pixmap = QPixmap::fromImage(*Image[0]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    ui->greybtn->setEnabled(true);
+}
+
+void MainWindow::on_actionSave_File_triggered()
+{
+    if(Image[currentstep]==NULL){
+        QMessageBox msgBox;
+        msgBox.setText("The image hasn't been loaded.");
+        msgBox.exec();
+
+    }
+
+    else{
+        QString Simgpath=QFileDialog::getSaveFileName(this, tr("Save File"),"/",tr("PNG(*.png);;JPG(*.jpg)"));
+        *Image[currentstep]=pixmap.toImage();
+        Image[currentstep]->save(Simgpath);
+    }
+}
+
+void MainWindow::on_actionUndo_triggered()
 {
     if(currentstep>0)currentstep--;
 
-    pixmap = QPixmap::fromImage(*stepbackup[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep]);
     ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
 }
 
-void MainWindow::on_redobtn_clicked()
+void MainWindow::on_actionRedo_triggered()
 {
-    if(stepbackup[currentstep+1]!=NULL)currentstep++;
+    if(Image[currentstep+1]!=NULL)currentstep++;
 
-    pixmap = QPixmap::fromImage(*stepbackup[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep]);
     ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
 }

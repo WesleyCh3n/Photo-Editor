@@ -27,23 +27,24 @@ public slots:
     QImage * MainWindow::greyScale(QImage * origin);
 
 private slots:
-    void on_imgbtn_clicked();
-
-    void on_savebtn_clicked();
 
     void on_verticalSlider_valueChanged(int value);
 
     void on_greybtn_clicked();
 
-    void on_undobtn_clicked();
+    void on_actionOpen_File_triggered();
 
-    void on_redobtn_clicked();
+    void on_actionSave_File_triggered();
+
+    void on_actionUndo_triggered();
+
+    void on_actionRedo_triggered();
 
 private:
     Ui::MainWindow *ui;
     QPixmap pixmap;
-    QImage *Image;
-    QImage *stepbackup[10];
+    QImage *Image[10];
+    QImage *I;
     int currentstep=0;
 
 };
