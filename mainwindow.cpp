@@ -1,3 +1,8 @@
+/*
+許述文 20170731
+學習QImage、read TXT file、tab的使用，以及圖片灰階處理
+想把圖片處理做成一個function,還沒成功
+*/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -6,82 +11,103 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+
     this->setWindowTitle(tr("GrayScale"));
+
+
+    this->setFixedSize(800,600);
+    /*this->setStyleSheet(
+                "background-image:url(https://up-1.cdn-fullscreendirect.com/production/photos/10393/large/20170214_211843_10393_968993.jpeg);background-position: center;");*/
+
+
+
+    //QPixmap使用底層平台的繪製系統進行繪製，無法提供像素級別的操作，而QImage則是獨立於硬體的繪製系統，
+    //因此可以用setPixel()函式，對影像的像素進行設置，且QImage在不同系統上有相同的影像。
+    //bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+
+
+    /*  QPalette palette;   //調色盤
+    palette.setBrush(QPalette::Background, bkgnd);
+    this->setPalette(palette);
+*/
+
+    ui->greybtn->setEnabled(false);
+
+
 }
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_imgbtn_clicked()
 {
-    QString FilePath;
+    //載入圖片到lable
     Image = new QImage();
-    FilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Images (*.png *.jpg)"));
-    Image->load(FilePath);
+    QString imgpath=QFileDialog::getOpenFileName(this, tr("Open File"),"/",tr("Image *.png *.jpg"));
+    Image->load(imgpath);
+
     pixmap = QPixmap::fromImage(*Image);
-    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height(),Qt::KeepAspectRatio));
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    ui->greybtn->setEnabled(true);
 }
 
-QImage *MainWindow::blur(QImage *origin){
-    QImage *newImage = new QImage(*origin);
+void MainWindow::on_savebtn_clicked()
+{
+    QString Simgpath=QFileDialog::getSaveFileName(this, tr("Save File"),"/",tr("PNG(*.png);;JPG(*.jpg)"));
+    *Image=pixmap.toImage();
+    Image->save(Simgpath);
+}
 
-    int kernel [5][5]= {{0,0,1,0,0},
-                        {0,1,3,1,0},
-                        {1,3,7,3,1},
-                        {0,1,3,1,0},
-                        {0,0,1,0,0}};
-    int kernelSize = 5;
-    int sumKernel = 27;
-    int r,g,b;
-    QColor color;
+void MainWindow::on_verticalSlider_valueChanged(int value)
+{
+    ui->sliderlabel->setText(QString::number(value));
+}
 
-    for(int x=kernelSize/2; x<newImage->width()-(kernelSize/2); x++){
-        for(int y=kernelSize/2; y<newImage->height()-(kernelSize/2); y++){
+QImage *MainWindow::greyScale(QImage *origin){
+    QImage *newImage = new QImage(origin->width(), origin->height(), QImage::Format_ARGB32);
 
-            r = 0;
-            g = 0;
-            b = 0;
+    QColor oldColor;
 
-            for(int i = -kernelSize/2; i<= kernelSize/2; i++){
-                for(int j = -kernelSize/2; j<= kernelSize/2; j++){
-                    color = QColor(origin->pixel(x+i, y+j));
-                    r += color.red()*kernel[kernelSize/2+i][kernelSize/2+j];
-                    g += color.green()*kernel[kernelSize/2+i][kernelSize/2+j];
-                    b += color.blue()*kernel[kernelSize/2+i][kernelSize/2+j];
-                }
-            }
-
-            r = qBound(0, r/sumKernel, 255);
-            g = qBound(0, g/sumKernel, 255);
-            b = qBound(0, b/sumKernel, 255);
-
-            newImage->setPixel(x,y, qRgb(r,g,b));
-
+    for(int x = 0; x<newImage->width(); x++){
+        for(int y = 0; y<newImage->height(); y++){
+            oldColor = QColor(origin->pixel(x,y));
+            int average = (oldColor.red()+oldColor.green()+oldColor.blue())/3;
+            newImage->setPixel(x,y,qRgb(average,average,average));
         }
     }
+
     return newImage;
 }
 
-void MainWindow::on_pushButton_2_clicked()
+
+
+void MainWindow::on_greybtn_clicked()
 {
 
+    stepbackup[currentstep]=Image;
+    currentstep++;
+    stepbackup[currentstep]=greyScale(stepbackup[currentstep-1]);
+    pixmap = QPixmap::fromImage(*stepbackup[currentstep]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
 
-
-    QImage test=*Image;
-    *Image=blur(test);
-
-    //ui->label->setFixedSize(test.size());
-    pixmap = QPixmap::fromImage(test);
-    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height(),Qt::KeepAspectRatio));
-    statusBar()->showMessage(tr("GrayScale is down"));
 }
 
-void MainWindow::on_pushButton_3_clicked()
+void MainWindow::on_undobtn_clicked()
 {
-    QString ImagePath;
-    ImagePath =QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("PNG(*.png);;JPG(*.jpg)"));
-    *Image=pixmap.toImage();
-    Image->save(ImagePath);
+    if(currentstep>0)currentstep--;
+
+    pixmap = QPixmap::fromImage(*stepbackup[currentstep]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+}
+
+void MainWindow::on_redobtn_clicked()
+{
+    if(stepbackup[currentstep+1]!=NULL)currentstep++;
+
+    pixmap = QPixmap::fromImage(*stepbackup[currentstep]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
 }

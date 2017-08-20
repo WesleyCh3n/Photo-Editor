@@ -1,18 +1,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QWidget>
 #include <QMainWindow>
-#include <QMainWindow>
-#include <QImage>
 #include <QFileDialog>
+#include <QImage>
 #include <QString>
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
-#include <QPixmap>
-#include <QPainter>
 #include <QBitmap>
+#include <QPicture>
+#include <QPixmap>
+
 namespace Ui {
 class MainWindow;
 }
@@ -24,21 +23,29 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
 public slots:
-    QImage
+    QImage * MainWindow::greyScale(QImage * origin);
 
 private slots:
-    void on_pushButton_clicked();
+    void on_imgbtn_clicked();
 
-    void on_pushButton_2_clicked();
+    void on_savebtn_clicked();
 
-    void on_pushButton_3_clicked();
+    void on_verticalSlider_valueChanged(int value);
+
+    void on_greybtn_clicked();
+
+    void on_undobtn_clicked();
+
+    void on_redobtn_clicked();
 
 private:
     Ui::MainWindow *ui;
     QPixmap pixmap;
     QImage *Image;
+    QImage *stepbackup[10];
+    int currentstep=0;
+
 };
 
 #endif // MAINWINDOW_H

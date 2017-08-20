@@ -6,67 +6,116 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>695</width>
-    <height>556</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="imgbtn">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>430</y>
-      <width>93</width>
-      <height>28</height>
+      <x>110</x>
+      <y>0</y>
+      <width>75</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Open File</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>390</y>
-      <width>93</width>
-      <height>28</height>
+      <x>20</x>
+      <y>30</y>
+      <width>361</width>
+      <height>231</height>
      </rect>
     </property>
     <property name="text">
-     <string>Grayscale</string>
+     <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="savebtn">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>430</y>
-      <width>93</width>
-      <height>28</height>
+      <x>200</x>
+      <y>0</y>
+      <width>75</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Save File</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QSlider" name="verticalSlider">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>30</y>
-      <width>541</width>
-      <height>331</height>
+      <x>360</x>
+      <y>20</y>
+      <width>22</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="sliderlabel">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>10</y>
+      <width>47</width>
+      <height>12</height>
      </rect>
     </property>
     <property name="text">
-     <string/>
+     <string>TextLabel</string>
     </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+   </widget>
+   <widget class="QPushButton" name="greybtn">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Grey</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="undobtn">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>200</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>undo</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="redobtn">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>220</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>redo</string>
     </property>
    </widget>
   </widget>
@@ -75,10 +124,19 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>695</width>
-     <height>25</height>
+     <width>400</width>
+     <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuOpen">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_File"/>
+    <addaction name="actionSave_File"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuOpen"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -89,6 +147,21 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen_File">
+   <property name="text">
+    <string>Open File</string>
+   </property>
+  </action>
+  <action name="actionSave_File">
+   <property name="text">
+    <string>Save File</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
