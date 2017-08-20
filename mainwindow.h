@@ -26,6 +26,8 @@ public:
 public slots:
     QImage * MainWindow::greyScale(QImage * origin);
 
+    void undo_redo_enable();
+
 private slots:
 
     void on_verticalSlider_valueChanged(int value);
@@ -40,10 +42,12 @@ private slots:
 
     void on_actionRedo_triggered();
 
+
+
 private:
     Ui::MainWindow *ui;
     QPixmap pixmap;
-    QImage *Image[10];
+    QImage *Image[10]={NULL};   //若不設成NULL不乾淨
     QImage *I;
     int currentstep=0;
 

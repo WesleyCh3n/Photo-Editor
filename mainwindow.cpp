@@ -33,7 +33,20 @@ MainWindow::MainWindow(QWidget *parent) :
 */
 
     ui->greybtn->setEnabled(false);
+    undo_redo_enable();             //每執行一次修改偵測一次有沒有復原和重做
+}
 
+void MainWindow::undo_redo_enable(){
+
+    if(currentstep>0)
+        ui->actionUndo->setDisabled(false);
+    else
+        ui->actionUndo->setDisabled(true);
+
+    if(Image[currentstep+1]!=NULL)
+        ui->actionRedo->setDisabled(false);
+    else
+        ui->actionRedo->setDisabled(true);
 
 }
 
@@ -75,6 +88,8 @@ void MainWindow::on_greybtn_clicked()
     pixmap = QPixmap::fromImage(*Image[currentstep+1]);
     ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
     currentstep++;
+
+    undo_redo_enable();
 }
 
 
@@ -109,16 +124,21 @@ void MainWindow::on_actionSave_File_triggered()
 
 void MainWindow::on_actionUndo_triggered()
 {
-    if(currentstep>0)currentstep--;
+
+    currentstep--;
 
     pixmap = QPixmap::fromImage(*Image[currentstep]);
     ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    undo_redo_enable();
 }
 
 void MainWindow::on_actionRedo_triggered()
 {
-    if(Image[currentstep+1]!=NULL)currentstep++;
+
+    currentstep++;
 
     pixmap = QPixmap::fromImage(*Image[currentstep]);
     ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+
+    undo_redo_enable();
 }
