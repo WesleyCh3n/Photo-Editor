@@ -95,6 +95,7 @@ QImage *MainWindow::greyScale(QImage *origin){
     return newImage;
 }
 
+
 QImage *MainWindow::brightnessScale(bool set, int value, QImage *origin){
     QImage *newImage = new QImage(origin->width(), origin->height(), QImage::Format_ARGB32);
 
@@ -124,21 +125,113 @@ QImage *MainWindow::brightnessScale(bool set, int value, QImage *origin){
         return newImage;
 }
 
+QImage * MainWindow::saturation(int delta, QImage * origin){
+    QImage * newImage = new QImage(origin->width(), origin->height(), QImage::Format_ARGB32);
 
-//------------------------------------按鍵區
+    QColor oldColor;
+    QColor newColor;
+    int h,s,l;
 
-void MainWindow::on_greybtn_clicked()
-{
+    for(int x=0; x<newImage->width(); x++){
+        for(int y=0; y<newImage->height(); y++){
+            oldColor = QColor(origin->pixel(x,y));
 
-    Image[currentstep+1]=greyScale(Image[currentstep]);
-    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
-    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
-    currentstep++;
+            newColor = oldColor.toHsl();
+            h = newColor.hue();
+            s = newColor.saturation()+delta;
+            l = newColor.lightness();
 
-    undo_redo_enable();
+            //we check if the new value is between 0 and 255
+            s = qBound(0, s, 255);
+
+            newColor.setHsl(h, s, l);
+
+            newImage->setPixel(x, y, qRgb(newColor.red(), newColor.green(), newColor.blue()));
+        }
+    }
+
+    return newImage;
 }
 
+QImage * MainWindow::blur(QImage * origin){
+    QImage * newImage = new QImage(*origin);
 
+    int kernel [5][5]= {{0,0,1,0,0},
+                        {0,1,3,1,0},
+                        {1,3,7,3,1},
+                        {0,1,3,1,0},
+                        {0,0,1,0,0}};
+    int kernelSize = 5;
+    int sumKernel = 27;
+    int r,g,b;
+    QColor color;
+
+    for(int x=kernelSize/2; x<newImage->width()-(kernelSize/2); x++){
+        for(int y=kernelSize/2; y<newImage->height()-(kernelSize/2); y++){
+
+            r = 0;
+            g = 0;
+            b = 0;
+
+            for(int i = -kernelSize/2; i<= kernelSize/2; i++){
+                for(int j = -kernelSize/2; j<= kernelSize/2; j++){
+                    color = QColor(origin->pixel(x+i, y+j));
+                    r += color.red()*kernel[kernelSize/2+i][kernelSize/2+j];
+                    g += color.green()*kernel[kernelSize/2+i][kernelSize/2+j];
+                    b += color.blue()*kernel[kernelSize/2+i][kernelSize/2+j];
+                }
+            }
+
+            r = qBound(0, r/sumKernel, 255);
+            g = qBound(0, g/sumKernel, 255);
+            b = qBound(0, b/sumKernel, 255);
+
+            newImage->setPixel(x,y, qRgb(r,g,b));
+
+        }
+    }
+    return newImage;
+}
+
+QImage * MainWindow::sharpen(QImage * origin){
+    QImage * newImage = new QImage(* origin);
+
+    int kernel [3][3]= {{0,-1,0},
+                        {-1,5,-1},
+                        {0,-1,0}};
+    int kernelSize = 3;
+    int sumKernel = 1;
+    int r,g,b;
+    QColor color;
+
+    for(int x=kernelSize/2; x<newImage->width()-(kernelSize/2); x++){
+        for(int y=kernelSize/2; y<newImage->height()-(kernelSize/2); y++){
+
+            r = 0;
+            g = 0;
+            b = 0;
+
+            for(int i = -kernelSize/2; i<= kernelSize/2; i++){
+                for(int j = -kernelSize/2; j<= kernelSize/2; j++){
+                    color = QColor(origin->pixel(x+i, y+j));
+                    r += color.red()*kernel[kernelSize/2+i][kernelSize/2+j];
+                    g += color.green()*kernel[kernelSize/2+i][kernelSize/2+j];
+                    b += color.blue()*kernel[kernelSize/2+i][kernelSize/2+j];
+                }
+            }
+
+            r = qBound(0, r/sumKernel, 255);
+            g = qBound(0, g/sumKernel, 255);
+            b = qBound(0, b/sumKernel, 255);
+
+            newImage->setPixel(x,y, qRgb(r,g,b));
+
+        }
+    }
+    return newImage;
+}
+
+//------------------------------------按鍵區
 
 void MainWindow::on_actionOpen_File_triggered()
 {
@@ -200,9 +293,50 @@ void MainWindow::on_actionRedo_triggered()
     undo_redo_enable();
 }
 
+void MainWindow::on_greybtn_clicked()
+{
+
+    Image[currentstep+1]=greyScale(Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    currentstep++;
+
+    undo_redo_enable();
+}
+
 void MainWindow::on_brightnessset_btn_clicked()
 {
     Image[currentstep+1]=brightnessScale(1,brightnessdelta,Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    currentstep++;
+
+    undo_redo_enable();
+}
+
+void MainWindow::on_saturation_btn_clicked()
+{
+    Image[currentstep+1]=saturation(Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    currentstep++;
+
+    undo_redo_enable();
+}
+
+void MainWindow::on_blur_clicked()
+{
+    Image[currentstep+1]=blur(Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    currentstep++;
+
+    undo_redo_enable();
+}
+
+void MainWindow::on_Sharpen_clicked()
+{
+    Image[currentstep+1]=sharpen(Image[currentstep]);
     pixmap = QPixmap::fromImage(*Image[currentstep+1]);
     ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
     currentstep++;

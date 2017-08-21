@@ -46,6 +46,12 @@ private slots:
 
     void on_brightnessset_btn_clicked();
 
+    void on_saturation_btn_clicked();
+
+    void on_blur_clicked();
+
+    void on_Sharpen_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPixmap pixmap;
