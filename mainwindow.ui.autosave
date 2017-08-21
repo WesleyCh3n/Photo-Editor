@@ -119,7 +119,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="txtlabel_temperature">
+        <widget class="QLabel" name="txtlabel_warm">
          <property name="text">
           <string>色溫</string>
          </property>
@@ -129,7 +129,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="sliderlabel_T">
+        <widget class="QLabel" name="sliderlabel_warm">
          <property name="text">
           <string>0</string>
          </property>
@@ -141,7 +141,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QSlider" name="verticalSlider">
+          <widget class="QSlider" name="warmSlider">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -150,7 +150,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="warmset_btn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>
