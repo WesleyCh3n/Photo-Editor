@@ -42,9 +42,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->BrightnessSlider->setMaximum(60);
     //設置滑動條控件的值
     ui->BrightnessSlider->setValue(0);
+
+    ui->warmSlider->setMinimum(-50);
+    ui->warmSlider->setMaximum(50);
+    ui->warmSlider->setValue(0);
+
     ui->greybtn->setEnabled(false);
     ui->BrightnessSlider->setEnabled(false);
     ui->brightnessset_btn->setEnabled(false);
+    ui->warmSlider->setEnabled(false);
+    ui->warmset_btn->setEnabled(false);
 }
 
 void MainWindow::undo_redo_enable(){
@@ -65,14 +72,6 @@ void MainWindow::undo_redo_enable(){
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-
-void MainWindow::on_BrightnessSlider_valueChanged(int value)
-{
-    ui->sliderlabel->setText(QString::number(value));
-    brightnessdelta=value;
-    brightnessScale(0,brightnessdelta,Image[currentstep]);
 }
 
 
@@ -124,6 +123,57 @@ QImage *MainWindow::brightnessScale(bool set, int value, QImage *origin){
     else if(set==1)
         return newImage;
 }
+
+QImage * MainWindow::warm(bool set, int value, QImage * origin){
+    QImage *newImage = new QImage(origin->width(), origin->height(), QImage::Format_ARGB32);
+    QColor oldColor;
+    int r,g,b;
+    if(value>=0){
+        for(int x=0; x<newImage->width(); x++){
+            for(int y=0; y<newImage->height(); y++){
+                oldColor = QColor(origin->pixel(x,y));
+
+                r = oldColor.red() + value;
+                g = oldColor.green() + value;
+                b = oldColor.blue();
+                //we check if the new values are between 0 and 255
+
+                r = qBound(0, r, 255);  // a given object's value by given minimum and maximum values using the qBound() function.
+                g = qBound(0, g, 255);
+
+
+                newImage->setPixel(x,y, qRgb(r,g,b));
+            }
+        }
+    }
+    else if(value<0){
+        value=-value;
+        for(int x=0; x<newImage->width(); x++){
+
+            for(int y=0; y<newImage->height(); y++){
+
+                oldColor = QColor(origin->pixel(x,y));
+
+                r = oldColor.red();
+                g = oldColor.green();
+                b = oldColor.blue()+value;
+
+                //we check if the new value is between 0 and 255
+
+                b = qBound(0, b, 255);
+                newImage->setPixel(x,y, qRgb(r,g,b));
+            }
+        }
+    }
+    if(set==0){
+        pixmap = QPixmap::fromImage(*newImage);
+        ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    }
+
+    else if(set==1)
+        return newImage;
+}
+
 
 QImage * MainWindow::saturation(int delta, QImage * origin){
     QImage * newImage = new QImage(origin->width(), origin->height(), QImage::Format_ARGB32);
@@ -231,8 +281,71 @@ QImage * MainWindow::sharpen(QImage * origin){
     return newImage;
 }
 
-//------------------------------------按鍵區
 
+//------------------------------------互動按鈕區
+
+
+
+//slider
+
+void MainWindow::on_BrightnessSlider_valueChanged(int value){
+
+    ui->sliderlabel->setText(QString::number(value));
+    brightnessdelta=value;
+    brightnessScale(0,brightnessdelta,Image[currentstep]);
+
+}
+
+void MainWindow::on_warmSlider_valueChanged(int value){
+    ui->sliderlabel_warm->setText(QString::number(value));
+    color_temperaturedelta=value;
+    warm(0,color_temperaturedelta,Image[currentstep]);
+
+}
+
+//button
+
+void MainWindow::on_greybtn_clicked()
+
+{
+    Image[currentstep+1]=greyScale(Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+
+    currentstep++;
+
+    undo_redo_enable();
+}
+
+void MainWindow::on_brightnessset_btn_clicked()
+
+{
+
+    Image[currentstep+1]=brightnessScale(1,brightnessdelta,Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+
+    currentstep++;
+
+    undo_redo_enable();
+
+}
+
+void MainWindow::on_warmset_btn_clicked()
+
+{
+
+    Image[currentstep+1]=warm(1,color_temperaturedelta,Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    currentstep++;
+
+    undo_redo_enable();
+
+}
+
+
+//navbar
 void MainWindow::on_actionOpen_File_triggered()
 {
 
@@ -252,7 +365,8 @@ void MainWindow::on_actionOpen_File_triggered()
     ui->greybtn->setEnabled(true);
     ui->BrightnessSlider->setEnabled(true);
     ui->brightnessset_btn->setEnabled(true);
-
+    ui->warmSlider->setEnabled(true);
+    ui->warmset_btn->setEnabled(true);
     undo_redo_enable();
 }
 
@@ -293,30 +407,10 @@ void MainWindow::on_actionRedo_triggered()
     undo_redo_enable();
 }
 
-void MainWindow::on_greybtn_clicked()
-{
-
-    Image[currentstep+1]=greyScale(Image[currentstep]);
-    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
-    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
-    currentstep++;
-
-    undo_redo_enable();
-}
-
-void MainWindow::on_brightnessset_btn_clicked()
-{
-    Image[currentstep+1]=brightnessScale(1,brightnessdelta,Image[currentstep]);
-    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
-    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
-    currentstep++;
-
-    undo_redo_enable();
-}
 
 void MainWindow::on_saturation_btn_clicked()
 {
-    Image[currentstep+1]=saturation(Image[currentstep]);
+    Image[currentstep+1]=saturation(5,Image[currentstep]);
     pixmap = QPixmap::fromImage(*Image[currentstep+1]);
     ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
     currentstep++;

@@ -25,13 +25,17 @@ public:
     ~MainWindow();
 public slots:
     QImage * MainWindow::greyScale(QImage * origin);
-    QImage * MainWindow::brightnessScale(bool,int,QImage * origin);
+    QImage * MainWindow::brightnessScale(bool set,int value,QImage * origin);
+    QImage * MainWindow::warm(bool set, int value, QImage * origin);
+    QImage * MainWindow::saturation(int delta, QImage * origin);
+    QImage * MainWindow::blur(QImage * origin);
+    QImage * MainWindow::sharpen(QImage * origin);
     void undo_redo_enable();
 
 private slots:
 
     void on_BrightnessSlider_valueChanged(int value);
-
+    void on_warmSlider_valueChanged(int value);
     void on_greybtn_clicked();
 
     void on_actionOpen_File_triggered();
@@ -42,9 +46,9 @@ private slots:
 
     void on_actionRedo_triggered();
 
-
-
     void on_brightnessset_btn_clicked();
+
+    void on_warmset_btn_clicked();
 
     void on_saturation_btn_clicked();
 
@@ -59,7 +63,7 @@ private:
     QImage *Image[100];
     int currentstep=0;
     int brightnessdelta=0;
-
+    int color_temperaturedelta=0;
 };
 
 #endif // MAINWINDOW_H

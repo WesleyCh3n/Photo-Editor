@@ -43,8 +43,8 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>609</x>
-      <y>32</y>
+      <x>730</x>
+      <y>50</y>
       <width>181</width>
       <height>231</height>
      </rect>
@@ -129,7 +129,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="sliderlabel_T">
+        <widget class="QLabel" name="sliderlabel_warm">
          <property name="text">
           <string>0</string>
          </property>
@@ -141,7 +141,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QSlider" name="verticalSlider">
+          <widget class="QSlider" name="warmSlider">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -150,7 +150,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="warmset_btn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -212,7 +212,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOpen">
