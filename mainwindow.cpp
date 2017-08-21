@@ -47,6 +47,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->warmSlider->setMaximum(50);
     ui->warmSlider->setValue(0);
 
+    ui->saturation_slider->setValue(0);
+    ui->saturation_slider->setMaximum(50);
+    ui->saturation_slider->setMinimum(-50);
+
     ui->greybtn->setEnabled(false);
     ui->BrightnessSlider->setEnabled(false);
     ui->brightnessset_btn->setEnabled(false);
@@ -178,7 +182,7 @@ QImage * MainWindow::warm(bool set, int value, QImage * origin){
 }
 
 
-QImage * MainWindow::saturation(int delta, QImage * origin){
+QImage * MainWindow::saturation(bool set, int value, QImage *origin){
     QImage * newImage = new QImage(origin->width(), origin->height(), QImage::Format_ARGB32);
 
     QColor oldColor;
@@ -191,7 +195,7 @@ QImage * MainWindow::saturation(int delta, QImage * origin){
 
             newColor = oldColor.toHsl();
             h = newColor.hue();
-            s = newColor.saturation()+delta;
+            s = newColor.saturation()+value;
             l = newColor.lightness();
 
             //we check if the new value is between 0 and 255
@@ -202,8 +206,13 @@ QImage * MainWindow::saturation(int delta, QImage * origin){
             newImage->setPixel(x, y, qRgb(newColor.red(), newColor.green(), newColor.blue()));
         }
     }
+    if(set==0){
+        pixmap = QPixmap::fromImage(*newImage);
+        ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    }
 
-    return newImage;
+    else if(set==1)
+        return newImage;
 }
 
 QImage * MainWindow::blur(QImage * origin){
@@ -306,6 +315,13 @@ void MainWindow::on_warmSlider_valueChanged(int value){
 
 }
 
+void MainWindow::on_saturation_slider_valueChanged(int value)
+{
+    ui->sliderlabel_saturation->setText(QString::number(value));
+    saturationdelta=value;
+    saturation(0,saturationdelta,Image[currentstep]);
+
+}
 //button
 
 void MainWindow::on_greybtn_clicked()
@@ -347,6 +363,15 @@ void MainWindow::on_warmset_btn_clicked()
 
 }
 
+void MainWindow::on_saturation_btn_clicked()
+{
+    Image[currentstep+1]=saturation(1,saturationdelta,Image[currentstep]);
+    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
+    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
+    currentstep++;
+
+    undo_redo_enable();
+}
 
 //navbar
 void MainWindow::on_actionOpen_File_triggered()
@@ -371,6 +396,7 @@ void MainWindow::on_actionOpen_File_triggered()
     ui->warmSlider->setEnabled(true);
     ui->warmset_btn->setEnabled(true);
     ui->saturation_btn->setEnabled(true);
+    ui->saturation_slider->setEnabled(true);
     ui->blur->setEnabled(true);
     ui->Sharpen->setEnabled(true);
     undo_redo_enable();
@@ -413,17 +439,6 @@ void MainWindow::on_actionRedo_triggered()
     undo_redo_enable();
 }
 
-
-void MainWindow::on_saturation_btn_clicked()
-{
-    Image[currentstep+1]=saturation(5,Image[currentstep]);
-    pixmap = QPixmap::fromImage(*Image[currentstep+1]);
-    ui->label->setPixmap(pixmap.scaled(ui->label->width(),ui->label->height()));
-    currentstep++;
-
-    undo_redo_enable();
-}
-
 void MainWindow::on_blur_clicked()
 {
     Image[currentstep+1]=blur(Image[currentstep]);
@@ -443,3 +458,5 @@ void MainWindow::on_Sharpen_clicked()
 
     undo_redo_enable();
 }
+
+

@@ -56,6 +56,8 @@ private slots:
 
     void on_Sharpen_clicked();
 
+    void on_saturation_slider_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
     QPixmap pixmap;
@@ -64,6 +66,7 @@ private:
     int currentstep=0;
     int brightnessdelta=0;
     int color_temperaturedelta=0;
+    int saturationdelta=0;
 };
 
 #endif // MAINWINDOW_H

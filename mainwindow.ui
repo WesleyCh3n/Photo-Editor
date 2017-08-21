@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>700</width>
+      <width>611</width>
       <height>550</height>
      </rect>
     </property>
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>780</x>
-      <y>310</y>
+      <y>350</y>
       <width>75</width>
       <height>28</height>
      </rect>
@@ -45,7 +45,7 @@
      <rect>
       <x>730</x>
       <y>50</y>
-      <width>181</width>
+      <width>199</width>
       <height>231</height>
      </rect>
     </property>
@@ -169,14 +169,14 @@
    <widget class="QPushButton" name="saturation_btn">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>360</y>
+      <x>640</x>
+      <y>250</y>
       <width>75</width>
       <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string>Saturation</string>
+     <string>Set</string>
     </property>
    </widget>
    <widget class="QPushButton" name="blur">
@@ -205,6 +205,51 @@
      <string>Sharpen</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>50</y>
+      <width>58</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>飽和度</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="sliderlabel_saturation">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>70</y>
+      <width>58</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QSlider" name="saturation_slider">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>100</y>
+      <width>21</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -212,7 +257,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOpen">
