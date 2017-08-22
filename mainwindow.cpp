@@ -400,7 +400,7 @@ void MainWindow::on_actionOpen_File_triggered()
     ui->saturation_slider->setEnabled(true);
     ui->blur->setEnabled(true);
     ui->Sharpen->setEnabled(true);
-    ui->saturation_slider->setEnabled(false);
+    ui->saturation_slider->setEnabled(true);
     undo_redo_enable();
 }
 
