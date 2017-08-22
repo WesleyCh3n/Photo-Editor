@@ -27,7 +27,7 @@ public slots:
     QImage * MainWindow::greyScale(QImage * origin);
     QImage * MainWindow::brightnessScale(bool set,int value,QImage * origin);
     QImage * MainWindow::warm(bool set, int value, QImage * origin);
-    QImage * MainWindow::saturation(int delta, QImage * origin);
+    QImage * MainWindow::saturation(bool set, int value, QImage *origin);
     QImage * MainWindow::blur(QImage * origin);
     QImage * MainWindow::sharpen(QImage * origin);
     void undo_redo_enable();

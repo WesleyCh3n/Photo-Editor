@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->BrightnessSlider->setEnabled(false);
     ui->brightnessset_btn->setEnabled(false);
     ui->warmSlider->setEnabled(false);
+    ui->saturation_slider->setEnabled(false);
     ui->warmset_btn->setEnabled(false);
     ui->saturation_btn->setEnabled(false);
     ui->blur->setEnabled(false);
@@ -399,6 +400,7 @@ void MainWindow::on_actionOpen_File_triggered()
     ui->saturation_slider->setEnabled(true);
     ui->blur->setEnabled(true);
     ui->Sharpen->setEnabled(true);
+    ui->saturation_slider->setEnabled(false);
     undo_redo_enable();
 }
 
