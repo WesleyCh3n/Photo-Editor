@@ -80,6 +80,7 @@ void MainWindow::undo_redo_enable(){
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete []*Image;
 }
 
 
@@ -462,3 +463,8 @@ void MainWindow::on_Sharpen_clicked()
 }
 
 
+
+void MainWindow::on_verticalSlider_valueChanged(int value)
+{
+
+}

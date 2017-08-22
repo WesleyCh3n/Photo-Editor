@@ -58,6 +58,8 @@ private slots:
 
     void on_saturation_slider_valueChanged(int value);
 
+    void on_verticalSlider_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
     QPixmap pixmap;
