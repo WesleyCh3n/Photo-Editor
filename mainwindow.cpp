@@ -462,9 +462,3 @@ void MainWindow::on_Sharpen_clicked()
     undo_redo_enable();
 }
 
-
-
-void MainWindow::on_verticalSlider_valueChanged(int value)
-{
-
-}
